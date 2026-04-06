@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 use App\Models\Setting;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View; 
-use App\Models\Category;      
+use App\Models\Category;       
 use Illuminate\Support\Facades\Gate;       
 use App\Models\User;
 
@@ -25,20 +25,27 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Your existing category logic...
+        // 1. Share Categories with Frontend Layout (Sorted by Admin Input)
         View::composer('layouts.frontend', function ($view) {
-            $view->with('navCategories', Category::whereNull('parent_id')->with('subcategories')->get());
+            $navCategories = Category::whereNull('parent_id')
+                ->with(['subcategories' => function ($query) {
+                    $query->orderBy('sort_order', 'asc'); // Sorts the dropdown items
+                }])
+                ->orderBy('sort_order', 'asc') // Sorts the main navigation tabs
+                ->get();
+                
+            $view->with('navCategories', $navCategories);
         });
 
-        // NEW: Share Settings with all layouts (both frontend and admin)
+        // 2. Share Settings with all layouts (both frontend and admin)
         View::composer('*', function ($view) {
-            // We check if the table exists first to prevent migration errors
+            // Check if the table exists first to prevent migration errors
             if (Schema::hasTable('settings')) {
                 $view->with('siteSetting', Setting::first());
             }
         });
 
-        // NEW: Define the Admin Gate
+        // 3. Define the Admin Gate
         Gate::define('admin', function (User $user) {
             return $user->role === 'admin';
         });

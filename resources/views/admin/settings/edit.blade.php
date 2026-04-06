@@ -163,6 +163,37 @@
                         </div>
                     </div>
 
+                    <div class="mt-8 pt-5 border-t">
+                        <h4 class="text-lg font-bold text-gray-800 mb-4">Social Media & App Links</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            
+                            <div>
+                                <label class="block font-medium text-sm text-gray-700">Mobile App URL (Play Store)</label>
+                                <input type="url" name="app_url"
+                                    value="{{ old('app_url', $setting->app_url) }}"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                                    placeholder="https://play.google.com/store/apps/details?id=...">
+                            </div>
+
+                            <div>
+                                <label class="block font-medium text-sm text-gray-700">Facebook URL</label>
+                                <input type="url" name="facebook_url"
+                                    value="{{ old('facebook_url', $setting->facebook_url) }}"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                                    placeholder="https://facebook.com/yourpage">
+                            </div>
+
+                            <div>
+                                <label class="block font-medium text-sm text-gray-700">Twitter (X) URL</label>
+                                <input type="url" name="twitter_url"
+                                    value="{{ old('twitter_url', $setting->twitter_url) }}"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                                    placeholder="https://twitter.com/yourhandle">
+                            </div>
+
+                        </div>
+                    </div>
+
                     <div class="flex justify-end mt-6">
                         <button type="submit"
                             class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 font-medium">

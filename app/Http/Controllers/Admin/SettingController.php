@@ -21,7 +21,7 @@ class SettingController extends Controller
     {
         $setting = Setting::first();
 
-        // Added validation rules for the new banners to ensure only images are uploaded
+        // Validate all fields including the new social media links
         $request->validate([
             'site_name' => 'required|string|max:255',
             'site_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
@@ -34,9 +34,25 @@ class SettingController extends Controller
             'contact_fax' => 'nullable|string|max:255',
             'contact_mobile' => 'nullable|string|max:255',
             'contact_email' => 'nullable|string|max:255',
+            'app_url' => 'nullable|url|max:255',
+            'facebook_url' => 'nullable|url|max:255',
+            'twitter_url' => 'nullable|url|max:255',
         ]);
 
+        // Assign basic info
         $setting->site_name = $request->site_name;
+
+        // Assign Contact Info (Fixed!)
+        $setting->contact_address = $request->contact_address;
+        $setting->contact_phone = $request->contact_phone;
+        $setting->contact_fax = $request->contact_fax;
+        $setting->contact_mobile = $request->contact_mobile;
+        $setting->contact_email = $request->contact_email;
+
+        // Assign Social Links
+        $setting->app_url = $request->app_url;
+        $setting->facebook_url = $request->facebook_url;
+        $setting->twitter_url = $request->twitter_url;
 
         // Handle Main Logo upload
         if ($request->hasFile('site_logo')) {
@@ -84,6 +100,6 @@ class SettingController extends Controller
         // Save everything to the database
         $setting->save();
 
-        return redirect()->back()->with('success', 'Site settings and Ad banners updated successfully!');
+        return redirect()->back()->with('success', 'Site settings, social links, and Ad banners updated successfully!');
     }
 }

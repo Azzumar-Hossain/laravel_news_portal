@@ -50,12 +50,14 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'parent_id' => 'nullable|exists:categories,id'
+            'parent_id' => 'nullable|exists:categories,id',
+            'sort_order' => 'nullable|integer',
         ]);
 
         $category->update([
             'name' => $request->name,
-            'parent_id' => $request->parent_id
+            'parent_id' => $request->parent_id,
+            'sort_order' => $request->sort_order ?? 0,
         ]);
 
         return redirect()->route('categories.index')->with('success', 'Category updated successfully!');
