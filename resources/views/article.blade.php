@@ -15,13 +15,13 @@
         
         <div class="col-lg-8 mb-5" id="printable-area">
             
-            <div class="d-none d-print-block mb-4">
+            <!--<div class="d-none d-print-block mb-4">
                 <h1 class="fw-bold m-0" style="font-size: 3rem; font-family: 'Tiro Bangla', Georgia, serif;">{{ $siteSetting->site_name ?? 'রেডিও মহানন্দা' }}</h1>
                 <div class="mt-2 mb-4 pb-2 border-bottom border-dark" style="font-size: 1rem;">Printed on: {{ date('F d, Y') }}</div>
                 
                 <div class="mb-3 text-dark" style="font-size: 1.1rem;">{{ $article->created_at->format('F d, Y') }}</div>
                 <div class="mb-2 text-dark" style="font-size: 1.2rem;">{{ $article->category }}</div>
-            </div>
+            </div>-->
 
             <a href="{{ route('category', $article->category) }}" class="badge bg-danger text-decoration-none mb-3 px-3 py-2 d-print-none" style="font-size: 0.9rem;">
                 {{ $article->category }}

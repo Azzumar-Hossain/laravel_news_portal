@@ -20,10 +20,18 @@
             .navbar .nav-item.dropdown:hover .dropdown-menu {
                 display: block;
                 margin-top: 0;
+                animation: fadeDropdown 0.2s ease-in-out;
             }
 
-            .navbar .nav-item.dropdown:hover .dropdown-menu {
-                animation: fadeDropdown 0.2s ease-in-out;
+            /* This creates an invisible bridge so the mouse never falls into a gap */
+            .navbar .dropdown-menu::before {
+                content: "";
+                position: absolute;
+                top: -10px;
+                left: 0;
+                right: 0;
+                height: 10px;
+                background: transparent;
             }
 
             @keyframes fadeDropdown {
@@ -31,7 +39,6 @@
                     opacity: 0;
                     transform: translateY(5px);
                 }
-
                 100% {
                     opacity: 1;
                     transform: translateY(0);
@@ -40,48 +47,85 @@
         }
 
         /* ==========================================
-           Responsive Header & Player Sizes
+           PRINT VIEW STYLES
            ========================================== */
+        @media print {
+            /* 1. Forcefully erase the ticker, nav, and any print-hidden items */
+            .d-print-none, 
+            .ticker-wrapper, 
+            #print-news-ticker,
+            nav {
+                display: none !important;
+                opacity: 0 !important;
+                visibility: hidden !important;
+                height: 0 !important;
+            }
+
+            /* 2. Hide the text title in the header */
+            #print-title {
+                display: none !important;
+            }
+
+            /* 3. Make the Logo HUGE */
+            #print-logo {
+                display: block !important;
+                height: 150px !important; /* THIS IS THE MAGIC LINE! It overrides the 85px */
+                max-height: none !important; /* Removes any maximum limits */
+                width: auto !important;
+                margin: 0 0 20px 0 !important;
+            }
+        }
+
+        /* ==========================================
+            Responsive Header & Player Sizes
+            ========================================== */
         .header-logo {
-            height: 50px;
-            /* Strict smaller height for mobile */
-            width: auto;
+            height: auto !important;
+            width: 85px !important; /* Super small for tiny mobile screens to stop overlapping */
+            max-width: 100% !important;
             object-fit: contain;
+            display: block !important;
             transition: all 0.3s ease;
+        }
+
+        @media (min-width: 576px) {
+            .header-logo {
+                width: 120px !important; /* Size for Landscape Mobile */
+            }
         }
 
         @media (min-width: 768px) {
             .header-logo {
-                height: 85px;
+                width: 180px !important; /* Size for Tablet */
             }
+        }
 
-            /* Larger for desktop */
+        @media (min-width: 992px) {
+            .header-logo {
+                width: 220px !important; /* Your perfect Desktop size */
+            }
         }
 
         .play-btn {
             width: 36px;
-            height: 36px;
-            /* Smaller button for mobile */
+            height: 36px; /* Smaller button for mobile */
             transition: all 0.3s ease;
         }
 
         @media (min-width: 768px) {
             .play-btn {
-                width: 45px;
-                height: 45px;
+                width: 40px; /* Reduced slightly to give logo more space */
+                height: 40px; 
             }
-
-            /* Larger for desktop */
         }
 
         .radio-text {
-            font-size: 0.85rem;
-            /* Smaller text for mobile */
+            font-size: 0.8rem; /* Smaller text for mobile */
         }
 
         @media (min-width: 768px) {
             .radio-text {
-                font-size: 1rem;
+                font-size: 0.9rem; /* Reduced slightly to compact the player */
             }
         }
 
@@ -103,17 +147,9 @@
         }
 
         @keyframes blink {
-            0% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.2;
-            }
-
-            100% {
-                opacity: 1;
-            }
+            0% { opacity: 1; }
+            50% { opacity: 0.2; }
+            100% { opacity: 1; }
         }
 
         .sound-bars {
@@ -133,34 +169,15 @@
             animation: bounce 1s infinite alternate;
         }
 
-        .sound-bars.playing .bar:nth-child(1) {
-            animation-delay: 0.1s;
-        }
-
-        .sound-bars.playing .bar:nth-child(2) {
-            animation-delay: 0.3s;
-        }
-
-        .sound-bars.playing .bar:nth-child(3) {
-            animation-delay: 0.0s;
-        }
-
-        .sound-bars.playing .bar:nth-child(4) {
-            animation-delay: 0.4s;
-        }
-
-        .sound-bars.playing .bar:nth-child(5) {
-            animation-delay: 0.2s;
-        }
+        .sound-bars.playing .bar:nth-child(1) { animation-delay: 0.1s; }
+        .sound-bars.playing .bar:nth-child(2) { animation-delay: 0.3s; }
+        .sound-bars.playing .bar:nth-child(3) { animation-delay: 0.0s; }
+        .sound-bars.playing .bar:nth-child(4) { animation-delay: 0.4s; }
+        .sound-bars.playing .bar:nth-child(5) { animation-delay: 0.2s; }
 
         @keyframes bounce {
-            0% {
-                height: 3px;
-            }
-
-            100% {
-                height: 15px;
-            }
+            0% { height: 3px; }
+            100% { height: 15px; }
         }
 
         #volume-slider::-webkit-slider-thumb {
@@ -169,6 +186,26 @@
 
         #volume-slider::-moz-range-thumb {
             background: #dc3545;
+        }
+        
+        .ticker-wrapper {
+            background-color: #f8f9fa;
+        }
+
+        .ticker-content {
+            display: inline-block;
+            white-space: nowrap;
+            padding-left: 100%;
+            animation: marquee 60s linear infinite;
+        }
+
+        .ticker-wrapper:hover .ticker-content {
+            animation-play-state: paused;
+        }
+
+        @keyframes marquee {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
         }
     </style>
 </head>
@@ -182,34 +219,8 @@
                     @php
                         $engDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
                         $bngDays = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
-                        $engMonths = [
-                            'January',
-                            'February',
-                            'March',
-                            'April',
-                            'May',
-                            'June',
-                            'July',
-                            'August',
-                            'September',
-                            'October',
-                            'November',
-                            'December',
-                        ];
-                        $bngMonths = [
-                            'জানুয়ারি',
-                            'ফেব্রুয়ারি',
-                            'মার্চ',
-                            'এপ্রিল',
-                            'মে',
-                            'জুন',
-                            'জুলাই',
-                            'আগস্ট',
-                            'সেপ্টেম্বর',
-                            'অক্টোবর',
-                            'নভেম্বর',
-                            'ডিসেম্বর',
-                        ];
+                        $engMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                        $bngMonths = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
                         $engNum = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
                         $bngNum = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
 
@@ -232,7 +243,7 @@
     <div class="container py-2 py-md-3 bg-white">
         <div class="row align-items-center">
 
-            <div class="col-lg-3 col-md-2 d-none d-md-flex gap-3">
+            <div class="col-lg-2 col-md-2 d-none d-md-flex gap-3">
                 <a href="{{ $siteSetting->app_url ?? '#' }}" target="_blank"
                     class="text-dark fs-5 text-decoration-none hover-red"><i class="fa-solid fa-mobile-screen"></i></a>
                 <a href="{{ $siteSetting->facebook_url ?? '#' }}" target="_blank"
@@ -241,15 +252,14 @@
                     class="text-dark fs-5 text-decoration-none hover-red"><i class="fa-brands fa-twitter"></i></a>
             </div>
 
-            <div
-                class="col-12 col-md-6 col-lg-6 d-flex flex-row align-items-center justify-content-between justify-content-md-center gap-2 gap-md-4">
+            <div class="col-12 col-md-6 col-lg-7 d-flex flex-row align-items-center justify-content-between justify-content-md-center gap-2">
 
-                <a href="{{ route('home') }}" class="text-decoration-none flex-shrink-0">
+                <a href="{{ route('home') }}" class="text-decoration-none flex-shrink-0 me-md-2">
                     @if (isset($siteSetting) && $siteSetting->site_logo)
-                        <img src="{{ $siteSetting->site_logo }}" alt="{{ $siteSetting->site_name }}"
-                            class="header-logo">
+                        <img id="print-logo" src="{{ $siteSetting->site_logo }}" alt="{{ $siteSetting->site_name }}"
+                            style="width: 220px !important; height: auto !important; max-width: 100% !important; display: block;">
                     @else
-                        <h1 class="text-danger m-0 fw-bold"
+                        <h1 id="print-title" class="text-danger m-0 fw-bold"
                             style="font-family: Georgia, serif; letter-spacing: 1px; text-transform: uppercase; font-size: 1.1rem;">
                             {{ $siteSetting->site_name ?? 'GLOBAL TIMES' }}
                         </h1>
@@ -257,49 +267,42 @@
                 </a>
 
                 <div id="live-radio-player-wrapper" data-turbo-permanent="true" class="flex-shrink-1 d-print-none"
-                    style="min-width: 170px;">
-                    <div
-                        class="radio-player-card bg-white border border-danger shadow-sm rounded-pill p-1 p-md-2 d-flex align-items-center">
+                        style="min-width: 100px; max-width: 250px;"> <div class="radio-player-card bg-white border border-danger shadow-sm rounded-pill p-1 px-md-2 py-md-1 d-flex align-items-center">
 
                         <audio id="mahananda-stream" preload="none"></audio>
 
                         <button id="radio-play-btn"
                             class="btn btn-danger rounded-circle shadow-sm d-flex align-items-center justify-content-center flex-shrink-0 play-btn">
-                            <i class="fa-solid fa-play ms-1" style="font-size: 0.8rem;" id="radio-icon"></i>
+                            <i class="fa-solid fa-play ms-1" style="font-size: 0.75rem;" id="radio-icon"></i>
                         </button>
 
                         <div class="radio-info mx-2 flex-grow-1 text-start">
                             <div class="d-flex align-items-center mb-1">
                                 <span
                                     class="live-badge badge bg-danger rounded-pill d-flex align-items-center px-1 py-1"
-                                    style="font-size: 0.5rem;">
+                                    style="font-size: 0.45rem;">
                                     <span class="live-dot me-1"></span> LIVE
                                 </span>
                                 <strong class="ms-1 text-dark radio-text"
-                                    style="font-family: 'Tiro Bangla', serif; line-height: 1; white-space: nowrap;">সরাসরি
-                                    শুনুন</strong>
+                                    style="font-family: 'Tiro Bangla', serif; line-height: 1; white-space: nowrap;"></strong>
                             </div>
 
                             <div class="sound-bars d-flex align-items-end" id="sound-visualizer">
-                                <div class="bar"></div>
-                                <div class="bar"></div>
-                                <div class="bar"></div>
-                                <div class="bar"></div>
-                                <div class="bar"></div>
+                                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
                             </div>
                         </div>
 
-                        <div class="volume-control d-none d-md-flex align-items-center me-2" style="width: 80px;">
-                            <i class="fa-solid fa-volume-high text-secondary me-2 fs-6" id="volume-icon"></i>
+                        <div class="volume-control d-none d-lg-flex align-items-center me-1" style="width: 60px;">
+                            <i class="fa-solid fa-volume-high text-secondary me-1" style="font-size: 0.8rem;" id="volume-icon"></i>
                             <input type="range" id="volume-slider" min="0" max="1" step="0.01"
-                                value="1" class="form-range" style="height: 5px;">
+                                value="1" class="form-range" style="height: 4px;">
                         </div>
                     </div>
                 </div>
 
             </div>
 
-            <div class="col-lg-3 col-md-4 d-none d-md-flex justify-content-end">
+            <div class="col-lg-3 col-md-4 d-none d-md-flex justify-content-end d-print-none">
                 <form action="{{ route('search') }}" method="GET" class="d-flex w-100" style="max-width: 250px;">
                     <div class="input-group">
                         <input type="text" name="q" class="form-control rounded-0 border-danger border-end-0"
@@ -315,7 +318,7 @@
         </div>
     </div>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-white border-top border-bottom shadow-sm sticky-top z-3">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-top border-bottom shadow-sm sticky-top z-3 d-print-none">
         <div class="container">
             <button class="navbar-toggler rounded-0" type="button" data-bs-toggle="collapse"
                 data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false"
@@ -325,13 +328,11 @@
 
             <div class="collapse navbar-collapse justify-content-center" id="mainNavbar">
                 @php
-                    // 1. TYPE YOUR EXACT SEQUENCE HERE
-                    // You can move these around anytime by just rearranging this list!
                     $menuSequence = [
-                        'চাঁপাইনবাবগঞ্জ', // Or 'চাঁপাইনবাবগঞ্জ সদর' if that's your DB name
+                        'চাঁপাইনবাবগঞ্জ', 
                         'রাজশাহী',
                         'নওগাঁ',
-                        'জাতীয়', // Note: If your DB category is actually named 'বাংলাদেশ', change this to 'বাংলাদেশ'
+                        'জাতীয়', 
                         'আন্তর্জাতিক',
                         'খেলাধুলা',
                         'বিনোদন',
@@ -340,19 +341,17 @@
                         'লাইফস্টাইল',
                     ];
 
-            // 2. Fetch categories from DB just to get the dropdown menus
             $dbCategories = \App\Models\Category::with('subcategories')->get();
                 @endphp
 
                 <ul class="navbar-nav mx-auto gap-3 fw-bold" style="font-size: 1.1rem;">
 
                     <li class="nav-item">
-                        <a class="nav-link text-dark hover-red" href="{{ url('/') }}">নীড়</a>
+                        <a class="nav-link text-dark hover-red" href="{{ url('/') }}">নীড়</a>
                     </li>
 
                     @foreach ($menuSequence as $menuName)
                         @php
-                            // Try to find the category in the database to see if it has dropdowns
                             $category = $dbCategories->firstWhere('name', $menuName);
                         @endphp
 
@@ -377,6 +376,10 @@
                             </li>
                         @endif
                     @endforeach
+
+                    <li class="nav-item">
+                        <a class="nav-link text-dark hover-red" href="{{ url('/contact') }}">যোগাযোগ</a>
+                    </li>
 
                 </ul>
             </div>
@@ -414,39 +417,12 @@
                     </div>
                 </div>
             </div>
-
-            <style>
-                .ticker-wrapper {
-                    background-color: #f8f9fa;
-                }
-
-                .ticker-content {
-                    display: inline-block;
-                    white-space: nowrap;
-                    padding-left: 100%;
-                    animation: marquee 60s linear infinite;
-                }
-
-                .ticker-wrapper:hover .ticker-content {
-                    animation-play-state: paused;
-                }
-
-                @keyframes marquee {
-                    0% {
-                        transform: translate(0, 0);
-                    }
-
-                    100% {
-                        transform: translate(-100%, 0);
-                    }
-                }
-            </style>
         @endif
 
         @yield('content')
     </main>
 
-    <footer class="bg-dark text-white pt-5 mt-5">
+    <footer class="bg-dark text-white pt-5 mt-5 d-print-none">
         <div class="container pb-4">
             <div class="row">
                 <div class="col-lg-3 col-md-6 mb-4 mb-lg-0 text-center text-lg-start">
