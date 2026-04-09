@@ -459,7 +459,7 @@
                 <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
                     <h6 class="fw-bold mb-3 text-light">মোবাইল অ্যাপ</h6>
                     <p class="mb-3 small text-light opacity-75">ডাউনলোড করুন</p>
-                    <a href="#"><img
+                    <a href="https://play.google.com/store/apps/details?id=com.radiomahananda.news&pcampaignid=web_share"><img
                             src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
                             alt="Get it on Google Play" style="width: 140px;"></a>
                 </div>
