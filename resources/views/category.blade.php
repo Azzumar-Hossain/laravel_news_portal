@@ -6,7 +6,7 @@
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb" style="font-size: 0.9rem;">
             <li class="breadcrumb-item"><a href="{{ route('home') }}" class="text-decoration-none text-danger"><i class="fa-solid fa-house"></i> Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ $categoryName }}</li>
+            <li class="breadcrumb-item active" aria-current="page">{{ $categoryName == 'বাংলাদেশ' ? 'জাতীয়' : $categoryName }}</li>
         </ol>
     </nav>
 
@@ -16,7 +16,7 @@
             
             <div class="mb-4 border-bottom border-danger border-3 pb-2">
                 <h1 class="fw-bold m-0" style="color: #1a1a1a;">
-                    <i class="fa-solid fa-folder-open text-danger me-2"></i> {{ $categoryName }}
+                    <i class="fa-solid fa-folder-open text-danger me-2"></i> {{ $categoryName == 'বাংলাদেশ' ? 'জাতীয়' : $categoryName }}
                 </h1>
             </div>
 
@@ -35,8 +35,7 @@
                                     
                                     <div class="text-muted small mb-2">
                                         <i class="fa-regular fa-calendar me-1"></i> {{ $article->created_at->format('M d, Y') }} 
-                                        <i class="fa-regular fa-user ms-2 me-1"></i> {{ $article->user->name ?? 'Unknown' }}
-                                    </div>
+                                        </div>
                                     
                                     <p class="card-text text-muted small flex-grow-1" style="line-height: 1.5;">
                                         {{ Str::limit(strip_tags($article->excerpt ?? $article->content), 100) }}

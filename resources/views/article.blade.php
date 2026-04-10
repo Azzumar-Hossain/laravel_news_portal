@@ -6,7 +6,7 @@
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb" style="font-size: 0.9rem;">
             <li class="breadcrumb-item"><a href="{{ route('home') }}" class="text-decoration-none text-danger"><i class="fa-solid fa-house"></i> Home</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('category', $article->category) }}" class="text-decoration-none text-danger">{{ $article->category }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('category', $article->category) }}" class="text-decoration-none text-danger">{{ $article->category == 'বাংলাদেশ' ? 'জাতীয়' : $article->category }}</a></li>
             <li class="breadcrumb-item active" aria-current="page">{{ Str::limit($article->title, 40) }}</li>
         </ol>
     </nav>
@@ -15,16 +15,15 @@
         
         <div class="col-lg-8 mb-5" id="printable-area">
             
-            <!--<div class="d-none d-print-block mb-4">
-                <h1 class="fw-bold m-0" style="font-size: 3rem; font-family: 'Tiro Bangla', Georgia, serif;">{{ $siteSetting->site_name ?? 'রেডিও মহানন্দা' }}</h1>
+            <div class="d-none d-print-block mb-4">
                 <div class="mt-2 mb-4 pb-2 border-bottom border-dark" style="font-size: 1rem;">Printed on: {{ date('F d, Y') }}</div>
                 
                 <div class="mb-3 text-dark" style="font-size: 1.1rem;">{{ $article->created_at->format('F d, Y') }}</div>
-                <div class="mb-2 text-dark" style="font-size: 1.2rem;">{{ $article->category }}</div>
-            </div>-->
+                <div class="mb-2 text-dark" style="font-size: 1.2rem;">{{ $article->category == 'বাংলাদেশ' ? 'জাতীয়' : $article->category }}</div>
+            </div>
 
             <a href="{{ route('category', $article->category) }}" class="badge bg-danger text-decoration-none mb-3 px-3 py-2 d-print-none" style="font-size: 0.9rem;">
-                {{ $article->category }}
+                {{ $article->category == 'বাংলাদেশ' ? 'জাতীয়' : $article->category }}
             </a>
 
             <h1 class="fw-bold mb-3 article-main-title" style="line-height: 1.3; font-size: 2.5rem; color: #1a1a1a;">
@@ -33,9 +32,7 @@
 
             <div class="d-flex flex-wrap justify-content-between align-items-center border-top border-bottom py-3 mb-4 text-muted d-print-none">
                 <div class="d-flex align-items-center mb-2 mb-md-0">
-                    <!--<i class="fa-solid fa-circle-user fs-3 me-2 text-secondary"></i>-->
                     <div>
-                        <!--<div class="fw-bold text-dark" style="font-size: 0.95rem;">{{ $article->user->name ?? 'News Desk' }}</div>-->
                         <div style="font-size: 0.85rem;"><i class="fa-regular fa-clock me-1"></i> Published: {{ $article->created_at->format('F d, Y \a\t h:i A') }}</div>
                     </div>
                 </div>
