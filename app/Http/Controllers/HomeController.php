@@ -41,6 +41,13 @@ class HomeController extends Controller
         // Keep track of all hero IDs so we don't duplicate them in the "Recent News" section below
         $heroArticleIds = array_merge($sliderArticleIds, $gridArticleIds);
 
+        // ১টি বড় খবরের জন্য এবং ৬টি ছোট খবরের জন্য মোট ৭টি নিউজ কল করছি
+        $sadarArticles = Article::where('category', 'চাঁপাইনবাবগঞ্জ সদর')
+                                ->where('status', 'published')
+                                ->latest()
+                                ->take(7)
+                                ->get();
+
         // 3. TOP ROW: 'বাংলাদেশ', 'আন্তর্জাতিক', and Recent Posts
         $bangladeshArticles = Article::where('category', 'জাতীয়')->where('status', 'published')->latest()->take(3)->get();
         $internationalArticles = Article::where('category', 'আন্তর্জাতিক')->where('status', 'published')->latest()->take(3)->get();
@@ -58,6 +65,7 @@ class HomeController extends Controller
         // Pass all variables to the view
         return view('home', compact(
             'sliderArticles', 'gridArticles',
+            'sadarArticles',
             'bangladeshArticles', 'internationalArticles', 'recentPosts', 
             'techArticles', 'entertainmentArticles', 'sportsArticles',
             'editorialArticles', 'lifestyleArticles'

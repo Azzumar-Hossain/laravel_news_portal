@@ -346,6 +346,7 @@
 
             <div class="collapse navbar-collapse justify-content-center" id="mainNavbar">
                 @php
+                    // মূল মেনু থেকে আগেরগুলো সরিয়ে নতুন সিকোয়েন্স দেওয়া হলো
                     $menuSequence = [
                         'চাঁপাইনবাবগঞ্জ', 
                         'রাজশাহী',
@@ -354,12 +355,9 @@
                         'আন্তর্জাতিক',
                         'খেলাধুলা',
                         'বিনোদন',
-                        'বিজ্ঞান ও প্রযুক্তি',
-                        'সম্পাদকীয়',
-                        'লাইফস্টাইল',
                     ];
 
-            $dbCategories = \App\Models\Category::with('subcategories')->get();
+                    $dbCategories = \App\Models\Category::with('subcategories')->get();
                 @endphp
 
                 <ul class="navbar-nav mx-auto gap-3 fw-bold" style="font-size: 1.1rem;">
@@ -394,6 +392,18 @@
                             </li>
                         @endif
                     @endforeach
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-dark hover-red" href="#" data-bs-toggle="dropdown">
+                            অন্যান্য
+                        </a>
+                        <ul class="dropdown-menu shadow border-0 rounded-0 m-0 border-top border-danger border-2">
+                            <li><a class="dropdown-item py-2 hover-red" href="{{ route('category', 'বিজ্ঞান ও প্রযুক্তি') }}">বিজ্ঞান ও প্রযুক্তি</a></li>
+                            <li><a class="dropdown-item py-2 hover-red" href="{{ route('category', 'লাইফস্টাইল') }}">লাইফস্টাইল</a></li>
+                            <li><a class="dropdown-item py-2 hover-red" href="{{ route('category', 'সম্পাদকীয়') }}">সম্পাদকীয়</a></li>
+                            <li><a class="dropdown-item py-2 hover-red" href="{{ route('category', 'উপসম্পাদকীয়') }}">উপসম্পাদকীয়</a></li>
+                        </ul>
+                    </li>
 
                     <li class="nav-item">
                         <a class="nav-link text-dark hover-red" href="{{ url('/contact') }}">যোগাযোগ</a>

@@ -139,6 +139,61 @@
             </div>
         </div>
     </div>
+
+    <div class="row mt-5 mb-5">
+        <div class="col-12 mb-4">
+            <div class="border-bottom border-danger border-2">
+                <h5 class="bg-danger text-white d-inline-block m-0 px-3 py-1 fw-bold text-uppercase" style="clip-path: polygon(0 0, 100% 0, 90% 100%, 0% 100%); padding-right: 30px !important;">
+                    <i class="fa-solid fa-map-location-dot me-1"></i> চাঁপাইনবাবগঞ্জ সদর
+                </h5>
+            </div>
+        </div>
+
+        @if(isset($sadarArticles) && $sadarArticles->count() > 0)
+            <div class="col-lg-7 mb-4 mb-lg-0">
+                <div class="row g-3">
+                    @foreach($sadarArticles->skip(1)->take(6) as $article)
+                        <div class="col-6 col-md-4">
+                            <div class="card border-0 h-100 bg-transparent">
+                                <a href="{{ route('article.show', $article->id) }}" class="text-decoration-none">
+                                    <div class="overflow-hidden mb-2">
+                                        <img src="{{ $article->image_url ?? 'https://placehold.co/300x200/eeeeee/999999?text=No+Image' }}" class="card-img-top rounded-0 hover-zoom object-fit-cover" style="height: 130px; width: 100%; transition: transform 0.3s ease;" alt="{{ $article->title }}">
+                                    </div>
+                                    <div class="card-body px-0 pt-1 pb-0">
+                                        <h6 class="card-title fw-bold text-dark hover-red mb-0" style="font-size: 0.95rem; line-height: 1.4;">
+                                            {{ Str::limit($article->title, 55) }}
+                                        </h6>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                @php $featureSadar = $sadarArticles->first(); @endphp
+                <div class="card border-0 h-100 bg-transparent">
+                    <a href="{{ route('article.show', $featureSadar->id) }}" class="text-decoration-none">
+                        <div class="overflow-hidden mb-3">
+                            <img src="{{ $featureSadar->image_url ?? 'https://placehold.co/600x400/eeeeee/999999?text=No+Image' }}" class="card-img-top rounded-0 hover-zoom object-fit-cover" style="height: 320px; width: 100%; transition: transform 0.3s ease;" alt="{{ $featureSadar->title }}">
+                        </div>
+                        <div class="card-body px-0 py-0">
+                            <h3 class="card-title fw-bold text-danger mb-2 hover-red" style="line-height: 1.3;">
+                                {{ $featureSadar->title }}
+                            </h3>
+                            <h6 class="fw-bold text-dark mb-2" style="line-height: 1.5;">
+                                {{ Str::limit(strip_tags($featureSadar->excerpt ?? $featureSadar->content), 120) }}
+                            </h6>
+                            <p class="card-text text-muted" style="font-size: 1rem; line-height: 1.6;">
+                                {{ Str::limit(strip_tags($featureSadar->content), 180) }}
+                            </p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        @endif
+    </div>
     
     <div class="row mt-5 mb-5">
         
