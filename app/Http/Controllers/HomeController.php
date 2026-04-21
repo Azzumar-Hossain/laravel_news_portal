@@ -42,7 +42,7 @@ class HomeController extends Controller
         $heroArticleIds = array_merge($sliderArticleIds, $gridArticleIds);
 
         // 3. TOP ROW: 'বাংলাদেশ', 'আন্তর্জাতিক', and Recent Posts
-        $bangladeshArticles = Article::where('category', 'বাংলাদেশ')->where('status', 'published')->latest()->take(3)->get();
+        $bangladeshArticles = Article::where('category', 'জাতীয়')->where('status', 'published')->latest()->take(3)->get();
         $internationalArticles = Article::where('category', 'আন্তর্জাতিক')->where('status', 'published')->latest()->take(3)->get();
         $recentPosts = Article::where('status', 'published')->whereNotIn('id', $heroArticleIds)->latest()->take(4)->get();
 
