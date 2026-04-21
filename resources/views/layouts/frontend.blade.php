@@ -15,6 +15,13 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
     <style>
+        /* Import Kalpurush Font */
+        @import url('https://fonts.maateen.me/kalpurush/font.css');
+
+        body {
+            font-family: 'Kalpurush', Arial, sans-serif;
+        }
+
         /* Desktop Hover Dropdown Menu */
         @media all and (min-width: 992px) {
             .navbar .nav-item.dropdown:hover .dropdown-menu {
@@ -47,8 +54,8 @@
         }
 
         /* ==========================================
-           PRINT VIEW STYLES
-           ========================================== */
+            PRINT VIEW STYLES
+            ========================================== */
         @media print {
             /* 1. Forcefully erase the ticker, nav, and any print-hidden items */
             .d-print-none, 
@@ -77,8 +84,8 @@
         }
 
         /* ==========================================
-            Responsive Header & Player Sizes
-            ========================================== */
+             Responsive Header & Player Sizes
+             ========================================== */
         .header-logo {
             height: auto !important;
             width: 85px !important; /* Super small for tiny mobile screens to stop overlapping */
@@ -207,6 +214,17 @@
             0% { transform: translate(0, 0); }
             100% { transform: translate(-100%, 0); }
         }
+
+        /* ==========================================
+           Menu Font Size Adjustment for Kalpurush
+           ========================================== */
+        .navbar-nav .nav-link {
+            font-size: 1.25rem !important; /* Increases the main menu size */
+        }
+        
+        .navbar-nav .dropdown-item {
+            font-size: 1.15rem !important; /* Increases the dropdown menu size */
+        }
     </style>
 </head>
 
@@ -215,7 +233,7 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-12 text-center text-md-start fw-medium"
-                    style="font-size: 0.9rem; font-family: 'Tiro Bangla', Georgia, serif; color: #333;">
+                    style="font-size: 0.9rem; font-family: 'Kalpurush', Arial, sans-serif; color: #333;">
                     @php
                         $engDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
                         $bngDays = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
@@ -284,7 +302,7 @@
                                     <span class="live-dot me-1"></span> LIVE
                                 </span>
                                 <strong class="ms-1 text-dark radio-text"
-                                    style="font-family: 'Tiro Bangla', serif; line-height: 1; white-space: nowrap;"></strong>
+                                    style="font-family: 'Kalpurush', Arial, sans-serif; line-height: 1; white-space: nowrap;"></strong>
                             </div>
 
                             <div class="sound-bars d-flex align-items-end" id="sound-visualizer">
@@ -396,7 +414,7 @@
                 <div class="d-flex align-items-center border border-danger rounded-0 shadow-sm bg-white overflow-hidden"
                     style="height: 45px;">
                     <div class="bg-danger text-white px-3 fw-bold d-flex align-items-center h-100 z-2 position-relative"
-                        style="white-space: nowrap; font-family: 'Tiro Bangla', serif; font-size: 1.1rem; min-width: max-content;">
+                        style="white-space: nowrap; font-family: 'Kalpurush', Arial, sans-serif; font-size: 1.1rem; min-width: max-content;">
                         <i class="fa-solid fa-bolt me-2 text-warning"></i> শিরোনাম
                         <div class="position-absolute top-0 start-100 h-100"
                             style="width: 0; height: 0; border-top: 22.5px solid transparent; border-bottom: 22.5px solid transparent; border-left: 15px solid #dc3545;">

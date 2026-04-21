@@ -96,7 +96,7 @@
                 box-shadow: 0 8px 15px rgba(0,0,0,0.15) !important;
             }
             .region-btn-text {
-                font-family: 'Tiro Bangla', serif;
+                font-family: 'Kalpurush', Arial, sans-serif;
                 font-size: 1.05rem;
                 color: #555;
                 transition: color 0.2s ease;

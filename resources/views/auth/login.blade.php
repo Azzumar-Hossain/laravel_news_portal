@@ -36,7 +36,7 @@
         </div>
         
         <div class="mt-8 text-center border-t border-slate-100 pt-5">
-             <span class="text-sm text-slate-500">New to Radio Mahananda?</span>
+             <span class="text-sm text-slate-500">New to {{ \App\Models\Setting::first()->site_name ?? 'দৈনিক গৌড় বাংলা' }}?</span>
              <a href="{{ route('register') }}" class="text-sm font-bold text-slate-800 hover:text-red-600 ml-1 transition-colors">Create Account</a>
         </div>
     </form>

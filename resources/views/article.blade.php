@@ -68,7 +68,7 @@
                 <div class="mt-5 pt-4 border-top d-print-none">
                     <div class="d-flex align-items-center mb-4">
                         <div class="bg-danger" style="width: 5px; height: 25px;"></div>
-                        <h4 class="fw-bold m-0 ms-2" style="font-family: 'Tiro Bangla', serif;">আরও পড়ুন</h4>
+                        <h4 class="fw-bold m-0 ms-2" style="font-family: 'Kalpurush', Arial, sans-serif;">আরও পড়ুন</h4>
                     </div>
                     
                     <div class="row g-3">

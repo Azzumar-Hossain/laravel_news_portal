@@ -5,29 +5,40 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Category;
-use App\Models\Setting; // Adjust if your model name is different
+use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class AppController extends Controller
 {
-    // 1. Get Site Settings (Logo, Radio Stream URL, Contact Info)
+    // 1. Get Site Settings
     public function settings()
     {
         $settings = Setting::first();
+        
+        // Ensure the logo gets the full website URL
+        if ($settings && $settings->site_logo) {
+            $settings->site_logo = asset($settings->site_logo);
+        }
+
         return response()->json([
             'success' => true,
             'data' => $settings
         ]);
     }
 
-    // 2. Get Latest News (For Homepage/Ticker)
+    // 2. Get Latest News
     public function latestNews(Request $request)
     {
-        // Removed the "with" relationships to test pure article retrieval
         $articles = Article::where('status', 'published')
             ->latest()
             ->take(15)
-            ->get();
+            ->get()
+            ->map(function ($article) {
+                // Attach full URLs and apply the category mask
+                $article->image_url = $article->image_url ? asset($article->image_url) : null;
+                $article->category = $article->category == 'বাংলাদেশ' ? 'জাতীয়' : $article->category;
+                return $article;
+            });
 
         return response()->json([
             'success' => true,
@@ -38,14 +49,16 @@ class AppController extends Controller
     // 3. Get Single Article Details
     public function singleArticle($id)
     {
-        $article = Article::with(['category', 'user:id,name'])->find($id);
+        // Removed 'user' relationship to hide publisher name as you requested earlier!
+        $article = Article::find($id);
 
         if (!$article) {
             return response()->json(['success' => false, 'message' => 'Article not found'], 404);
         }
 
-        // Increment view count if you have one
-        // $article->increment('views');
+        // Apply full URL and mask
+        $article->image_url = $article->image_url ? asset($article->image_url) : null;
+        $article->category = $article->category == 'বাংলাদেশ' ? 'জাতীয়' : $article->category;
 
         return response()->json([
             'success' => true,
@@ -56,10 +69,13 @@ class AppController extends Controller
     // 4. Get All Categories
     public function categories()
     {
-        // Get categories that have published articles
         $categories = Category::withCount(['articles' => function($query) {
             $query->where('status', 'published');
-        }])->get();
+        }])->get()->map(function ($cat) {
+            // Apply category mask to the category list
+            $cat->name = $cat->name == 'বাংলাদেশ' ? 'জাতীয়' : $cat->name;
+            return $cat;
+        });
 
         return response()->json([
             'success' => true,
@@ -70,11 +86,17 @@ class AppController extends Controller
     // 5. Get News by Category
     public function categoryNews($categoryId)
     {
-        $articles = Article::with(['category', 'user:id,name'])
-            ->where('category_id', $categoryId)
+        $articles = Article::where('category_id', $categoryId)
             ->where('status', 'published')
             ->latest()
-            ->paginate(10); // Use pagination for infinite scrolling in the app
+            ->paginate(10);
+
+        // Fix the items inside the paginator
+        $articles->getCollection()->transform(function ($article) {
+            $article->image_url = $article->image_url ? asset($article->image_url) : null;
+            $article->category = $article->category == 'বাংলাদেশ' ? 'জাতীয়' : $article->category;
+            return $article;
+        });
 
         return response()->json([
             'success' => true,

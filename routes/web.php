@@ -10,10 +10,16 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 
 // 1. PUBLIC FRONTEND ROUTES
-// 1. PUBLIC FRONTEND ROUTES
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/category/{slug}', [HomeController::class, 'category'])->name('category');
 Route::get('/article/{article}', [HomeController::class, 'show'])->name('article.show');
+Route::get('/search', [HomeController::class, 'search'])->name('search');
+
+// ADD THIS NEW CONTACT ROUTE:
+Route::get('/contact', function () {
+    $siteSetting = \App\Models\Setting::first(); 
+    return view('contact', compact('siteSetting'));
+})->name('contact');
 
 // ADD THIS NEW SEARCH ROUTE:
 Route::get('/search', [HomeController::class, 'search'])->name('search');

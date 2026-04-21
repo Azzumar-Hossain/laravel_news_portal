@@ -1,16 +1,20 @@
+@php
+    $siteSetting = \App\Models\Setting::first();
+    $siteName = $siteSetting->site_name ?? 'দৈনিক গৌড় বাংলা';
+@endphp
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Radio Mahananda - Secure Access</title>
+    <title>{{ $siteName }} - Secure Access</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&display=swap');
-        .bengali-font { font-family: 'Tiro Bangla', serif; }
+        @import url('https://fonts.maateen.me/kalpurush/font.css');
+        .bengali-font { font-family: 'Kalpurush', Arial, sans-serif !important; }
     </style>
 </head>
 <body class="font-sans antialiased bg-slate-100 min-h-screen flex flex-col justify-center items-center py-10">
@@ -22,13 +26,16 @@
             <div class="h-full w-1/2 bg-[#00a8e8]"></div>
         </div>
 
-        <div class="text-center mb-8 mt-2">
-            <h1 class="text-4xl font-extrabold text-slate-800 tracking-tight bengali-font mb-2">
-                রেডিও মহানন্দা
-            </h1>
-            <h2 class="text-xl font-bold text-red-600 bengali-font">
-                ৯৮.৮ এফ এম
-            </h2>
+        <div class="text-center mb-8 mt-2 flex justify-center">
+            <a href="{{ route('home') }}" class="text-decoration-none">
+                @if(isset($siteSetting) && $siteSetting->site_logo)
+                    <img src="{{ asset($siteSetting->site_logo) }}" alt="{{ $siteName }}" class="h-20 w-auto object-contain mx-auto">
+                @else
+                    <h1 class="text-4xl font-extrabold text-slate-800 tracking-tight bengali-font mb-2">
+                        {{ $siteName }}
+                    </h1>
+                @endif
+            </a>
         </div>
 
         {{ $slot }}
@@ -36,7 +43,7 @@
     </div>
 
     <div class="mt-8 text-center text-xs text-slate-500 font-medium">
-        &copy; {{ date('Y') }} Radio Mahananda 98.8FM. Secured Access Platform.<br>
+        &copy; {{ date('Y') }} {{ $siteName }}. Secured Access Platform.<br>
         Maintained by Proyas IT.
     </div>
     
