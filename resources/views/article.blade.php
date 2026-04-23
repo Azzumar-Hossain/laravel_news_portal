@@ -1,5 +1,18 @@
 @extends('layouts.frontend')
 
+@section('meta_tags')
+    <meta property="og:title" content="{{ $article->title }}" />
+    <meta property="og:description" content="{{ Str::limit(strip_tags($article->excerpt ?? $article->content), 150) }}" />
+    <meta property="og:image" content="{{ $article->image_url ?? asset($siteSetting->site_logo ?? '') }}" />
+    <meta property="og:url" content="{{ url()->current() }}" />
+    <meta property="og:type" content="article" />
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $article->title }}">
+    <meta name="twitter:description" content="{{ Str::limit(strip_tags($article->excerpt ?? $article->content), 150) }}">
+    <meta name="twitter:image" content="{{ $article->image_url ?? asset($siteSetting->site_logo ?? '') }}">
+@endsection
+
 @section('content')
 <div class="container mt-4 mb-5">
     

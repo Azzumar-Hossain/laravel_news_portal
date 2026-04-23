@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>{{ $siteSetting->site_name ?? 'Global Times - Clone' }}</title>
+    @yield('meta_tags')
     @if (isset($siteSetting) && $siteSetting->site_favicon)
         <link rel="icon" href="{{ $siteSetting->site_favicon }}" type="image/x-icon">
     @endif
