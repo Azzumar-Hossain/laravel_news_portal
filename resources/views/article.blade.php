@@ -3,14 +3,14 @@
 @section('meta_tags')
     <meta property="og:title" content="{{ $article->title }}" />
     <meta property="og:description" content="{{ Str::limit(strip_tags($article->excerpt ?? $article->content), 150) }}" />
-    <meta property="og:image" content="{{ $article->image_url ?? asset($siteSetting->site_logo ?? '') }}" />
+    <meta property="og:image" content="{{ $article->image_url ? asset($article->image_url) : asset($siteSetting->site_logo ?? '') }}" />
     <meta property="og:url" content="{{ url()->current() }}" />
     <meta property="og:type" content="article" />
     
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ $article->title }}">
     <meta name="twitter:description" content="{{ Str::limit(strip_tags($article->excerpt ?? $article->content), 150) }}">
-    <meta name="twitter:image" content="{{ $article->image_url ?? asset($siteSetting->site_logo ?? '') }}">
+    <meta name="twitter:image" content="{{ $article->image_url ? asset($article->image_url) : asset($siteSetting->site_logo ?? '') }}">
 @endsection
 
 @section('content')
@@ -68,7 +68,7 @@
             <div class="clearfix">
                 @if($article->image_url)
                     <div class="article-image-container mb-4 text-center">
-                        <img src="{{ $article->image_url }}" class="img-fluid object-fit-cover shadow-sm" style="max-height: 500px;" alt="{{ $article->title }}">
+                        <img src="{{ asset($article->image_url) }}" class="img-fluid object-fit-cover shadow-sm" style="max-height: 500px;" alt="{{ $article->title }}">
                     </div>
                 @endif
 
@@ -91,7 +91,7 @@
                                     <a href="{{ route('article.show', $related->id) }}" class="text-decoration-none">
                                         <div class="row g-0 h-100">
                                             <div class="col-4">
-                                                <img src="{{ $related->thumbnail_url ?? $related->image_url ?? 'https://placehold.co/150x150?text=No+Image' }}" class="w-100 h-100 object-fit-cover" alt="Related News">
+                                                <img src="{{ $related->thumbnail_url ? asset($related->thumbnail_url) : ($related->image_url ? asset($related->image_url) : 'https://placehold.co/150x150?text=No+Image') }}" class="w-100 h-100 object-fit-cover" alt="Related News">
                                             </div>
                                             <div class="col-8">
                                                 <div class="card-body p-2 p-md-3 d-flex flex-column h-100 justify-content-center">
@@ -113,7 +113,6 @@
             @endif
             </div>
 
-
         <div class="col-lg-4 ps-lg-4">
             
             <div class="mb-5">
@@ -126,7 +125,7 @@
                 <div class="d-flex flex-column gap-3">
                     @foreach($recentPosts as $recent)
                         <div class="d-flex align-items-center">
-                            <img src="{{ $recent->image_url ?? 'https://placehold.co/100x80/eeeeee/999999?text=No+Image' }}" class="rounded-0 object-fit-cover shadow-sm" style="width: 100px; height: 75px;">
+                            <img src="{{ $recent->thumbnail_url ? asset($recent->thumbnail_url) : ($recent->image_url ? asset($recent->image_url) : 'https://placehold.co/100x80/eeeeee/999999?text=No+Image') }}" class="rounded-0 object-fit-cover shadow-sm" style="width: 100px; height: 75px;">
                             <div class="ms-3">
                                 <h6 class="fw-bold mb-1" style="font-size: 0.95rem; line-height: 1.3;">
                                     <a href="{{ route('article.show', $recent->id) }}" class="text-dark text-decoration-none hover-red">{{ Str::limit($recent->title, 55) }}</a>

@@ -249,8 +249,64 @@
                         $currentYear = str_replace($engNum, $bngNum, date('Y'));
 
                         $gregorianDate = "{$currentDayName} {$currentDay} {$currentMonth} {$currentYear} খ্রিস্টাব্দ";
-                        $banglaDate = $siteSetting->bangla_date ?? '১৭ চৈত্র ১৪৩২ বঙ্গাব্দ';
-                        $hijriDate = $siteSetting->hijri_date ?? '১১ শাওয়াল ১৪৪৭ হিজরি';
+
+                        // === Automated Bangla Date (Revised BD Calendar) ===
+                        $day = (int)date('d'); $month = (int)date('m'); $year = (int)date('Y');
+                        
+                        $bYear = $year - 593;
+                        if ($month < 4 || ($month == 4 && $day < 14)) { $bYear = $year - 594; }
+                        
+                        $isLeap = (($year % 4 == 0) && ($year % 100 != 0)) || ($year % 400 == 0);
+                        $bDay = 0; $bMonth = '';
+                        
+                        if ($month == 1) { if ($day < 15) { $bMonth = 'পৌষ'; $bDay = $day + 16; } else { $bMonth = 'মাঘ'; $bDay = $day - 14; } }
+                        elseif ($month == 2) { if ($day < 14) { $bMonth = 'মাঘ'; $bDay = $day + 17; } else { $bMonth = 'ফাল্গুন'; $bDay = $day - 13; } }
+                        elseif ($month == 3) { if ($day < 15) { $bMonth = 'ফাল্গুন'; $bDay = $day + ($isLeap ? 16 : 15); } else { $bMonth = 'চৈত্র'; $bDay = $day - 14; } }
+                        elseif ($month == 4) { if ($day < 14) { $bMonth = 'চৈত্র'; $bDay = $day + 17; } else { $bMonth = 'বৈশাখ'; $bDay = $day - 13; } }
+                        elseif ($month == 5) { if ($day < 15) { $bMonth = 'বৈশাখ'; $bDay = $day + 17; } else { $bMonth = 'জ্যৈষ্ঠ'; $bDay = $day - 14; } }
+                        elseif ($month == 6) { if ($day < 15) { $bMonth = 'জ্যৈষ্ঠ'; $bDay = $day + 17; } else { $bMonth = 'আষাঢ়'; $bDay = $day - 14; } }
+                        elseif ($month == 7) { if ($day < 16) { $bMonth = 'আষাঢ়'; $bDay = $day + 16; } else { $bMonth = 'শ্রাবণ'; $bDay = $day - 15; } }
+                        elseif ($month == 8) { if ($day < 16) { $bMonth = 'শ্রাবণ'; $bDay = $day + 16; } else { $bMonth = 'ভাদ্র'; $bDay = $day - 15; } }
+                        elseif ($month == 9) { if ($day < 16) { $bMonth = 'ভাদ্র'; $bDay = $day + 16; } else { $bMonth = 'আশ্বিন'; $bDay = $day - 15; } }
+                        elseif ($month == 10) { if ($day < 17) { $bMonth = 'আশ্বিন'; $bDay = $day + 15; } else { $bMonth = 'কার্তিক'; $bDay = $day - 16; } }
+                        elseif ($month == 11) { if ($day < 16) { $bMonth = 'কার্তিক'; $bDay = $day + 15; } else { $bMonth = 'অগ্রহায়ণ'; $bDay = $day - 15; } }
+                        elseif ($month == 12) { if ($day < 16) { $bMonth = 'অগ্রহায়ণ'; $bDay = $day + 15; } else { $bMonth = 'পৌষ'; $bDay = $day - 15; } }
+                        
+                        // Bangla Number Suffixes (১লা, ২রা, ৫ই, ২২শে etc.)
+                        $suffix = '';
+                        if($bDay == 1) $suffix = 'লা';
+                        elseif($bDay == 2 || $bDay == 3) $suffix = 'রা';
+                        elseif($bDay == 4) $suffix = 'ঠা';
+                        elseif($bDay >= 5 && $bDay <= 18) $suffix = 'ই';
+                        elseif($bDay >= 19 && $bDay <= 31) $suffix = 'শে';
+
+                        $bDayStr = str_replace($engNum, $bngNum, $bDay);
+                        $bYearStr = str_replace($engNum, $bngNum, $bYear);
+                        $banglaDate = "{$bDayStr}{$suffix} {$bMonth} {$bYearStr} বঙ্গাব্দ";
+
+                        // === Automated Hijri Date Calculation ===
+                        if (function_exists('gregoriantojd')) {
+                            $jd = gregoriantojd($month, $day, $year);
+                            $l = $jd - 1948440 + 10632;
+                            $n = (int)(($l - 1) / 10631);
+                            $l = $l - 10631 * $n + 354;
+                            $j = ((int)((10985 - $l) / 5316)) * ((int)(50 * $l / 17719)) + ((int)($l / 5670)) * ((int)(43 * $l / 15238));
+                            $l = $l - ((int)((30 - $j) / 15)) * ((int)((17719 * $j) / 50)) - ((int)($j / 16)) * ((int)((15238 * $j) / 43)) + 29;
+                            
+                            $hMonth = (int)(24 * $l / 709);
+                            $hDay = $l - (int)(709 * $hMonth / 24);
+                            $hYear = 30 * $n + $j - 30;
+                            
+                            $hijriMonths = ['মহররম', 'সফর', 'রবিউল আউয়াল', 'রবিউস সানি', 'জমাদিউল আউয়াল', 'জমাদিউস সানি', 'রজব', 'শাবান', 'রমজান', 'শাওয়াল', 'জিলকদ', 'জিলহজ'];
+                            $hMonthName = $hijriMonths[$hMonth - 1];
+                            
+                            $hDayStr = str_replace($engNum, $bngNum, $hDay);
+                            $hYearStr = str_replace($engNum, $bngNum, $hYear);
+                            $hijriDate = "{$hDayStr} {$hMonthName} {$hYearStr} হিজরি";
+                        } else {
+                            // Fallback if server lacks Calendar extension
+                            $hijriDate = $siteSetting->hijri_date ?? '১১ শাওয়াল ১৪৪৭ হিজরি';
+                        }
                     @endphp
                     <i class="fa-regular fa-calendar me-1 text-danger"></i>
                     {{ $gregorianDate }} || {{ $banglaDate }} || {{ $hijriDate }}
