@@ -1,16 +1,21 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\AppController;
+use App\Http\Controllers\Api\NewsApiController;
 
+/*
+|--------------------------------------------------------------------------
+| Mobile App API Routes (Version 1)
+|--------------------------------------------------------------------------
+*/
 Route::prefix('v1')->group(function () {
-    Route::get('/settings', [AppController::class, 'settings']);
-    Route::get('/news/latest', [AppController::class, 'latestNews']);
-    Route::get('/news/{id}', [AppController::class, 'singleArticle']);
-    Route::get('/categories', [AppController::class, 'categories']);
-    Route::get('/categories/{id}/news', [AppController::class, 'categoryNews']);
-
-    // Add this new route for the mobile app contact form
-    Route::post('/contact', [AppController::class, 'submitContact']);
+    Route::get('/settings', [NewsApiController::class, 'getSettings']);
+    Route::get('/categories', [NewsApiController::class, 'getCategories']);
+    
+    Route::get('/news/latest', [NewsApiController::class, 'getLatestNews']);
+    Route::get('/news/featured', [NewsApiController::class, 'getFeaturedNews']);
+    Route::get('/news/category/{category}', [NewsApiController::class, 'getNewsByCategory']);
+    Route::get('/news/details/{id}', [NewsApiController::class, 'getNewsDetails']);
+    Route::get('/news/search', [NewsApiController::class, 'searchNews']);
 });
 

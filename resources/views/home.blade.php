@@ -56,13 +56,40 @@
 
         <div class="col-lg-6">
             <div class="row h-100 g-2"> 
-                @if(isset($gridArticles))
-                    @foreach($gridArticles as $article)
+                @php
+                    $mixedGridArticles = collect();
+                    
+                    // 1. আন্তর্জাতিক (International)
+                    $intArt = isset($internationalArticles) && $internationalArticles->count() > 0 
+                                ? $internationalArticles->first() 
+                                : \App\Models\Article::where('status', 'published')->where('category', 'আন্তর্জাতিক')->latest()->first();
+                    if($intArt) $mixedGridArticles->push($intArt);
+
+                    // 2. খেলাধুলা (Sports)
+                    $sportArt = isset($sportsArticles) && $sportsArticles->count() > 0 
+                                ? $sportsArticles->first() 
+                                : \App\Models\Article::where('status', 'published')->where('category', 'খেলাধুলা')->latest()->first();
+                    if($sportArt) $mixedGridArticles->push($sportArt);
+
+                    // 3. নাচোল (Nachol)
+                    $nacholArt = \App\Models\Article::where('status', 'published')->where('category', 'নাচোল')->latest()->first();
+                    if($nacholArt) $mixedGridArticles->push($nacholArt);
+
+                    // 4. জাতীয় (Bangladesh) - Directly matches your bottom section!
+                    $bdArt = isset($bangladeshArticles) && $bangladeshArticles->count() > 0 
+                                ? $bangladeshArticles->first() 
+                                : \App\Models\Article::where('status', 'published')->where('category', 'বাংলাদেশ')->latest()->first();
+                    if($bdArt) $mixedGridArticles->push($bdArt);
+                @endphp
+
+                @if($mixedGridArticles->count() > 0)
+                    @foreach($mixedGridArticles->take(4) as $article)
                         <div class="col-6">
                             <div class="card h-100 border-0 rounded-0 overflow-hidden text-white position-relative" style="min-height: 205px;">
                                 <img src="{{ $article->image_url ?? 'https://placehold.co/400x300/eeeeee/999999?text=No+Image' }}" class="w-100 h-100 object-fit-cover position-absolute" alt="News Image">
                                 
                                 <div class="card-img-overlay d-flex flex-column justify-content-end p-3" style="background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 70%);">
+                                    
                                     <h6 class="card-title fw-bold mb-2" style="line-height: 1.4; font-size: 0.95rem;">
                                         <a href="{{ route('article.show', $article->id) }}" class="text-white text-decoration-none hover-red">
                                             {{ Str::limit($article->title, 60) }}
@@ -144,55 +171,75 @@
         <div class="col-12 mb-4">
             <div class="border-bottom border-danger border-2">
                 <h5 class="bg-danger text-white d-inline-block m-0 px-3 py-1 fw-bold text-uppercase" style="clip-path: polygon(0 0, 100% 0, 90% 100%, 0% 100%); padding-right: 30px !important;">
-                    <i class="fa-solid fa-map-location-dot me-1"></i> চাঁপাইনবাবগঞ্জ সদর
+                    <i class="fa-solid fa-map-location-dot me-1"></i> চাঁপাইনবাবগঞ্জ
                 </h5>
             </div>
         </div>
 
-        @if(isset($sadarArticles) && $sadarArticles->count() > 0)
-            <div class="col-lg-7 mb-4 mb-lg-0">
-                <div class="row g-3">
-                    @foreach($sadarArticles->skip(1)->take(6) as $article)
-                        <div class="col-6 col-md-4">
-                            <div class="card border-0 h-100 bg-transparent">
-                                <a href="{{ route('article.show', $article->id) }}" class="text-decoration-none">
-                                    <div class="overflow-hidden mb-2">
-                                        <img src="{{ $article->image_url ?? 'https://placehold.co/300x200/eeeeee/999999?text=No+Image' }}" class="card-img-top rounded-0 hover-zoom object-fit-cover" style="height: 130px; width: 100%; transition: transform 0.3s ease;" alt="{{ $article->title }}">
-                                    </div>
-                                    <div class="card-body px-0 pt-1 pb-0">
-                                        <h6 class="card-title fw-bold text-dark hover-red mb-0" style="font-size: 0.95rem; line-height: 1.4;">
-                                            {{ Str::limit($article->title, 55) }}
-                                        </h6>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
+        @php
+            // ডানদিকের বড় অংশের জন্য সদর-এর সর্বশেষ খবর
+            $sadarFeature = \App\Models\Article::where('status', 'published')
+                                ->where('category', 'চাঁপাইনবাবগঞ্জ সদর')
+                                ->latest()
+                                ->first();
 
-            <div class="col-lg-5">
-                @php $featureSadar = $sadarArticles->first(); @endphp
-                <div class="card border-0 h-100 bg-transparent">
-                    <a href="{{ route('article.show', $featureSadar->id) }}" class="text-decoration-none">
-                        <div class="overflow-hidden mb-3">
-                            <img src="{{ $featureSadar->image_url ?? 'https://placehold.co/600x400/eeeeee/999999?text=No+Image' }}" class="card-img-top rounded-0 hover-zoom object-fit-cover" style="height: 320px; width: 100%; transition: transform 0.3s ease;" alt="{{ $featureSadar->title }}">
+            // বামদিকের গ্রিডের জন্য বাকি ৪টি উপজেলার ১টি করে সর্বশেষ খবর
+            $otherUpazilas = ['শিবগঞ্জ', 'ভোলাহাট', 'নাচোল', 'গোমস্তাপুর'];
+            $upazilaGridNews = collect();
+            
+            foreach($otherUpazilas as $upazila) {
+                $art = \App\Models\Article::where('status', 'published')
+                        ->where('category', $upazila)
+                        ->latest()
+                        ->first();
+                if($art) {
+                    $upazilaGridNews->push($art);
+                }
+            }
+        @endphp
+
+        <div class="col-lg-7 mb-4 mb-lg-0">
+            <div class="row g-3">
+                @foreach($upazilaGridNews as $article)
+                    <div class="col-6 col-md-6">
+                        <div class="card border-0 h-100 bg-transparent position-relative">
+                            <a href="{{ route('article.show', $article->id) }}" class="text-decoration-none">
+                                <div class="overflow-hidden mb-2 position-relative">
+                                    <img src="{{ $article->image_url ?? 'https://placehold.co/300x200/eeeeee/999999?text=No+Image' }}" class="card-img-top rounded-0 hover-zoom object-fit-cover" style="height: 160px; width: 100%; transition: transform 0.3s ease;" alt="{{ $article->title }}">
+                                </div>
+                                <div class="card-body px-0 pt-1 pb-0">
+                                    <h6 class="card-title fw-bold text-dark hover-red mb-0" style="font-size: 1.05rem; line-height: 1.4;">
+                                        {{ Str::limit($article->title, 55) }}
+                                    </h6>
+                                </div>
+                            </a>
                         </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            @if($sadarFeature)
+                <div class="card border-0 h-100 bg-transparent position-relative">
+                    <a href="{{ route('article.show', $sadarFeature->id) }}" class="text-decoration-none">
+                        <div class="overflow-hidden mb-3 position-relative">
+                            <img src="{{ $sadarFeature->image_url ?? 'https://placehold.co/600x400/eeeeee/999999?text=No+Image' }}" class="card-img-top rounded-0 hover-zoom object-fit-cover" style="height: 350px; width: 100%; transition: transform 0.3s ease;" alt="{{ $sadarFeature->title }}">
                         <div class="card-body px-0 py-0">
                             <h3 class="card-title fw-bold text-danger mb-2 hover-red" style="line-height: 1.3;">
-                                {{ $featureSadar->title }}
+                                {{ $sadarFeature->title }}
                             </h3>
                             <h6 class="fw-bold text-dark mb-2" style="line-height: 1.5;">
-                                {{ Str::limit(strip_tags($featureSadar->excerpt ?? $featureSadar->content), 120) }}
+                                {{ Str::limit(strip_tags($sadarFeature->excerpt ?? $sadarFeature->content), 120) }}
                             </h6>
                             <p class="card-text text-muted" style="font-size: 1rem; line-height: 1.6;">
-                                {{ Str::limit(strip_tags($featureSadar->content), 180) }}
+                                {{ Str::limit(strip_tags($sadarFeature->content), 150) }}
                             </p>
                         </div>
                     </a>
                 </div>
-            </div>
-        @endif
+            @endif
+        </div>
     </div>
     
     <div class="row mt-5 mb-5">
